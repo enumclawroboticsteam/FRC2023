@@ -5,39 +5,29 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Wrist;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-/**
- * Move the wrist to a given angle. This command finishes when it is within the tolerance, but
- * leaves the PID loop running to maintain the position. Other commands using the wrist should make
- * sure they disable PID!
- */
-public class MoveWrist extends CommandBase {
-  private final Wrist m_wrist;
-  private final double m_setpoint;
+public class MoveWrist extends WaitCommand {
+    private final Wrist m_wrist;
+    private final double m_speed;
 
-  /**
-   * Create a new SetWristSetpoint command.
-   *
-   * @param setpoint The setpoint to set the wrist to
-   * @param wrist The wrist to use
-   */
-  public MoveWrist(Wrist wrist, double setpoint) {
-    m_wrist = wrist;
-    m_setpoint = setpoint;
-    addRequirements(m_wrist);
-  }
+    public MoveWrist(Wrist wrist, double speed) {
+        super(.1);
+        m_wrist = wrist;
+        m_speed = speed;
+        addRequirements(m_wrist);
+    }
 
-  // Called just before this Command runs the first time
-  @Override
-  public void initialize() {
-    m_wrist.enable();
-    m_wrist.setSetpoint(m_setpoint);
-  }
+    // Called just before this Command runs the first time
+    @Override
+    public void initialize() {
+        m_wrist.set(m_speed);
+        super.initialize();
+    }
 
-  // Make this return true when this Command no longer needs to run execute()
-  @Override
-  public boolean isFinished() {
-    return m_wrist.getController().atSetpoint();
-  }
+      // Called once after isFinished returns true
+    @Override
+    public void end(boolean interrupted) {
+        m_wrist.stop();
+    }
 }

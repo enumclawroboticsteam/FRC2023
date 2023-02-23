@@ -4,8 +4,8 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -20,7 +20,7 @@ public class GrabPiece extends SequentialCommandGroup {
    * @param wrist The wrist subsystem to use
    * @param elevator The elevator subsystem to use
    */
-  public GrabPiece(Grabber grabber, Wrist wrist, Elevator elevator) {
+  public GrabPiece(Grabber grabber, Elevator elevator, Wrist wrist) {
     addCommands(
         new DetectPiece(grabber),
         new CloseGrabber(grabber));

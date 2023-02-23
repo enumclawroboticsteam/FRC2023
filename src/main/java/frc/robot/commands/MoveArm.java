@@ -5,39 +5,29 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Arm;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-/**
- * Move the elevator to a given location. This command finishes when it is within the tolerance, but
- * leaves the PID loop running to maintain the position. Other commands using the elevator should
- * make sure they disable PID!
- */
-public class MoveArm extends CommandBase {
-  private final Arm m_arm;
-  private final double m_setpoint;
+public class MoveArm extends WaitCommand {
+    private final Arm m_arm;
+    private final double m_speed;
 
-  /**
-   * Create a new SetElevatorSetpoint command.
-   *
-   * @param setpoint The setpoint to set the elevator to
-   * @param elevator The elevator to use
-   */
-  public MoveArm(Arm arm, double setPoint) {
-    m_arm = arm;
-    m_setpoint = setPoint;
-    addRequirements(m_arm);
-  }
+    public MoveArm(Arm arm, double speed) {
+        super(1);
+        m_arm = arm;
+        m_speed = speed;
+        addRequirements(m_arm);
+    }
 
-  // Called just before this Command runs the first time
-  @Override
-  public void initialize() {
-    m_arm.setSetpoint(m_setpoint);
-    m_arm.enable();
-  }
+    // Called just before this Command runs the first time
+    @Override
+    public void initialize() {
+        m_arm.set(m_speed);
+        super.initialize();
+    }
 
-  // Make this return true when this Command no longer needs to run execute()
-  @Override
-  public boolean isFinished() {
-    return m_arm.getController().atSetpoint();
-  }
+      // Called once after isFinished returns true
+    @Override
+    public void end(boolean interrupted) {
+        m_arm.stop();
+    }
 }

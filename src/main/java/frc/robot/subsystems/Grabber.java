@@ -5,14 +5,12 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
+//import com.revrobotics.DistanceSensor;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C.Port;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -22,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Grabber extends SubsystemBase {
     private final CANSparkMax m_motor = new CANSparkMax(Constants.kGrabberCANId, MotorType.kBrushless);
-    private final RangeFinder m_contact = new RangeFinder();
     private final ColorSensorV3 m_color = new ColorSensorV3(Port.kOnboard); 
     private final RelativeEncoder m_encoder = m_motor.getEncoder();
     private final double kCubeClosePosition = 200; // TODO: figure out right values
@@ -30,7 +27,7 @@ public class Grabber extends SubsystemBase {
 
     /** Create a new claw subsystem. */
     public Grabber() {
-
+        super();
     }
 
     public void log() {
@@ -67,9 +64,9 @@ public class Grabber extends SubsystemBase {
         return false;
     }
 
-    public boolean isGamePiece(){
+    public boolean isGamePiece() {
         //TODO: if we see purple or yellow and the distance is less than 2 in, then return true
-        return true;
+        return (m_color.getProximity() <= 2000);
     }
 
     /** Call log method every loop. */

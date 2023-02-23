@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import frc.robot.Robot;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 
@@ -36,7 +35,6 @@ public class Drivetrain extends SubsystemBase {
     private final RelativeEncoder m_leftEncoder = m_leftFrontMotor.getEncoder();
     private final RelativeEncoder m_rightEncoder = m_rightFrontMotor.getEncoder();
 
-    private final RangeFinder m_rangefinder = new RangeFinder();
     private final Pigeon2 m_gyro = new Pigeon2(20);
 
 
@@ -115,10 +113,10 @@ public class Drivetrain extends SubsystemBase {
      *
      * @return The distance to the obstacle detected by the rangefinder.
      */
-    public double getDistanceToObstacle() {
-        // Really meters in simulation since it's a rangefinder...
-        return m_rangefinder.getDistance();
-    }
+    // public double getDistanceToObstacle() {
+    //     // Really meters in simulation since it's a rangefinder...
+    //     return m_rangefinder.getDistance();
+    
 
     /** Call log method every loop. */
     @Override

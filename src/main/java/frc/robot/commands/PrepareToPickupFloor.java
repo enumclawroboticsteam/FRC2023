@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.Arm;
 
 /** Make sure the robot is in a state to pickup soda cans. */
 public class PrepareToPickupFloor extends SequentialCommandGroup {
@@ -19,12 +19,11 @@ public class PrepareToPickupFloor extends SequentialCommandGroup {
    * @param wrist The wrist subsystem to use
    * @param elevator The elevator subsystem to use
    */
-  public PrepareToPickupFloor(Grabber grabber, Wrist wrist, Elevator elevator, Arm armA, Arm armB) {
+  public PrepareToPickupFloor(Grabber grabber, Wrist wrist, Elevator elevator, Arm arm) {
     addCommands(
         new OpenGrabber(grabber),
-        new MoveWrist(wrist, 0),
-        new MoveArm(armA, 0),
-        new MoveArm(armB, 0),
-        new MoveElevator(elevator, 0));
+        new MoveWristPID(wrist, 0),
+        new MoveArmPID(arm, 0),
+        new MoveElevatorPID(elevator, 0));
   }
 }

@@ -5,18 +5,18 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /** Place Cone on top node, assumes that it's been grabed, in safe mode, and in correct location*/
 public class PlaceTopCube extends SequentialCommandGroup {
   /** Create a new autonomous command. */
-  public PlaceTopCube(Drivetrain drive, Grabber grabber, Wrist wrist, Elevator elevator, Arm armA, Arm armB) {
+  public PlaceTopCube(Drivetrain drive, Grabber grabber, Wrist wrist, Elevator elevator, Arm arm) {
     addCommands(
-        new ReachTopCubeNode(elevator, armA, armB),
+        new ReachTopCubeNode(elevator, arm),
         new NonFloorMoveWrist(wrist),
         new OpenGrabber(grabber));
   }
