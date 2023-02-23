@@ -41,7 +41,8 @@ public class RobotContainer {
   private final Arm m_armA = new Arm(Constants.kArmACANId);
   private final Arm m_armB = new Arm(Constants.kArmBCANId);
 
-  private final XboxController m_controller = new XboxController(1);
+  private final XboxController m_controller = new XboxController(0);
+  private final XboxController m_Controller2 = new XboxController(2);
 
   private final CommandBase m_autonomousCommand =
       new Autonomous(m_drivetrain, m_grabber, m_wrist, m_elevator, m_armA, m_armB);
@@ -84,13 +85,13 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     // Create some buttons
-    final JoystickButton reachFloor = new JoystickButton(m_reachButtons, 0);
-    final JoystickButton reachMidCone = new JoystickButton(m_reachButtons, 1);
-    final JoystickButton reachMidCube = new JoystickButton(m_reachButtons, 2);
-    final JoystickButton reachTopCone = new JoystickButton(m_reachButtons, 3);
-    final JoystickButton reachTopCube = new JoystickButton(m_reachButtons, 4);
-    final JoystickButton reachDoubleStation = new JoystickButton(m_reachButtons, 5);
-    final JoystickButton reachCruising = new JoystickButton(m_reachButtons, 6);
+    final JoystickButton reachFloor = new JoystickButton(m_reachButtons, 1);
+    final JoystickButton reachMidCone = new JoystickButton(m_reachButtons, 2);
+    final JoystickButton reachMidCube = new JoystickButton(m_reachButtons, 3);
+    final JoystickButton reachTopCone = new JoystickButton(m_reachButtons, 4);
+    final JoystickButton reachTopCube = new JoystickButton(m_reachButtons, 5);
+    final JoystickButton reachDoubleStation = new JoystickButton(m_reachButtons, 6);
+    final JoystickButton reachCruising = new JoystickButton(m_reachButtons,7);
    /*  final JoystickButton dpadUp = new JoystickButton(m_controller, 5);
     final JoystickButton dpadRight = new JoystickButton(m_controller, 6);
     final JoystickButton dpadDown = new JoystickButton(m_controller, 7);
@@ -102,13 +103,13 @@ public class RobotContainer {
 
     // Connect the buttons to commands
     */
-    reachFloor.whenPressed(new ReachFloor(m_elevator, m_armA, m_armB));
-    reachMidCone.whenPressed(new ReachMidConeNode(m_elevator, m_armA, m_armB));
-    reachTopCone.whenPressed(new ReachTopConeNode(m_elevator, m_armA, m_armB));
-    reachMidCube.whenPressed(new ReachMidCubeNode(m_elevator, m_armA, m_armB));
-    reachTopCube.whenPressed(new ReachTopCubeNode(m_elevator, m_armA, m_armB));
-    reachDoubleStation.whenPressed(new ReachOut(m_elevator, m_armA, m_armB, 0, 0, 0));
-    reachCruising.whenPressed(new ReachOut(m_elevator, m_armA, m_armB, 0, 0, 0));
+    reachFloor.onTrue(new ReachFloor(m_elevator, m_armA, m_armB));
+    reachMidCone.onTrue(new ReachMidConeNode(m_elevator, m_armA, m_armB));
+    reachTopCone.onTrue(new ReachTopConeNode(m_elevator, m_armA, m_armB));
+    reachMidCube.onTrue(new ReachMidCubeNode(m_elevator, m_armA, m_armB));
+    reachTopCube.onTrue(new ReachTopCubeNode(m_elevator, m_armA, m_armB));
+    reachDoubleStation.onTrue(new ReachOut(m_elevator, m_armA, m_armB, 0, 0, 0));
+    reachCruising.onTrue(new ReachOut(m_elevator, m_armA, m_armB, 0, 0, 0));
     /*
     dpadUp.whenPressed(new SetElevatorSetpoint(0.25, m_elevator));
     dpadDown.whenPressed(new SetElevatorSetpoint(0.0, m_elevator));

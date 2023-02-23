@@ -11,6 +11,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -22,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Grabber extends SubsystemBase {
     private final CANSparkMax m_motor = new CANSparkMax(Constants.kGrabberCANId, MotorType.kBrushless);
     private final RangeFinder m_contact = new RangeFinder();
-    private final ColorSensorV3 m_color = new ColorSensorV3(null); // TODO: figure out port number
+    private final ColorSensorV3 m_color = new ColorSensorV3(Port.kOnboard); 
     private final RelativeEncoder m_encoder = m_motor.getEncoder();
     private final double kCubeClosePosition = 200; // TODO: figure out right values
     private final double kConeClosePosition = 400;

@@ -37,7 +37,7 @@ public class Drivetrain extends SubsystemBase {
     private final RelativeEncoder m_rightEncoder = m_rightFrontMotor.getEncoder();
 
     private final RangeFinder m_rangefinder = new RangeFinder();
-    private final Pigeon2 m_gyro = new Pigeon2(5);
+    private final Pigeon2 m_gyro = new Pigeon2(20);
 
 
     /** Create a new drivetrain subsystem. */

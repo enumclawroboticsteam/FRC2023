@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
@@ -22,7 +23,7 @@ public class ReachOut extends SequentialCommandGroup {
    */
   public ReachOut(Elevator elevator, Arm armA, Arm armB, double elevatorSetPoint, double armASetPoint, double armBSetPoint) {
     addCommands(
-        parallel(new MoveElevator(elevator, elevatorSetPoint),
+        new ParallelCommandGroup(new MoveElevator(elevator, elevatorSetPoint),
                     new MoveArm(armA, armASetPoint),
                     new MoveArm(armB, armBSetPoint)));
         
