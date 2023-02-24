@@ -160,12 +160,16 @@ public class RobotContainer {
 
     public void runJoysticks() {
 
+        m_arm.log();
+
+        m_grabber.log();
+
         if (m_Controller2.getLeftBumper()){
-            new MoveArm(m_arm, .5).schedule();
+            new MoveArm(m_arm, 1).schedule();
         }
 
         if (m_Controller2.getLeftTriggerAxis() >= .25d) {
-            new MoveArm(m_arm, -.5).schedule();
+            new MoveArm(m_arm, -1).schedule();
         }
 
         if (m_Controller2.getRightBumper()) {
