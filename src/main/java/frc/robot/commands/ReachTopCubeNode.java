@@ -5,6 +5,6 @@ import frc.robot.subsystems.Elevator;
 
 public class ReachTopCubeNode extends ReachOut {
     public ReachTopCubeNode(Elevator elevator, Arm arm) {
-        super(elevator, arm, 12, 23);
+        super(elevator, arm, 12, 29);
     }
 }

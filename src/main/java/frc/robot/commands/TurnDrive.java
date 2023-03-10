@@ -24,7 +24,7 @@ public class TurnDrive extends PIDCommand {
   public TurnDrive(Drivetrain drivetrain, double heading) {
     //
     super(
-        new PIDController(4, 0, 0), drivetrain::getHeading, heading, h -> drivetrain.CurvatureDrive(0, h));
+        new PIDController(4, 0, 0), drivetrain::getHeading, heading, o -> drivetrain.ArcadeDrive(0, o));
 // TODO: Get Right Values
     m_drivetrain = drivetrain;
     addRequirements(m_drivetrain);

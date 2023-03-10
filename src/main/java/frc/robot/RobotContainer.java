@@ -6,11 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.ArcadeDrive;
-import frc.robot.commands.Autonomous;
+import frc.robot.commands.ChargeStationAuto;
+import frc.robot.commands.LongAllyAuto;
+import frc.robot.commands.ShortAllyAuto;
 import frc.robot.commands.CloseGrabber;
 import frc.robot.commands.MoveArm;
 import frc.robot.commands.MoveWrist;
@@ -28,8 +31,11 @@ import frc.robot.commands.ReachMidCubeNode;
 //import frc.robot.commands.ReachOut;
 import frc.robot.commands.ReachTopConeNode;
 import frc.robot.commands.ReachTopCubeNode;
+import frc.robot.commands.StopGrabber;
+import frc.robot.commands.StopWrist;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Grabber;
@@ -55,40 +61,21 @@ public class RobotContainer {
     private final XboxController m_controller = new XboxController(0);
     private final XboxController m_Controller2 = new XboxController(2);
 
-    private final CommandBase m_autonomousCommand = new Autonomous(m_drivetrain, m_elevator, m_arm, m_wrist, m_grabber);
+    //private final CommandBase m_autonomousCommand = new Autonomous(m_drivetrain, m_elevator, m_arm, m_wrist,
+            //m_grabber);
+    //private final CommandBase m_autonomousCommand2 = new Autonomous2(m_drivetrain, m_elevator, m_arm, m_wrist,
+           // m_grabber);
+
+
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        /*
-         * // Put Some buttons on the SmartDashboard
-         * SmartDashboard.putData("Elevator Bottom", new SetElevatorSetpoint(0,
-         * m_elevator));
-         * SmartDashboard.putData("Elevator Top", new SetElevatorSetpoint(0.25,
-         * m_elevator));
-         * 
-         * SmartDashboard.putData("Wrist Horizontal", new SetWristSetpoint(0, m_wrist));
-         * SmartDashboard.putData("Raise Wrist", new SetWristSetpoint(-45, m_wrist));
-         * 
-         * SmartDashboard.putData("Open Claw", new OpenClaw(m_claw));
-         * SmartDashboard.putData("Close Claw", new CloseClaw(m_claw));
-         * 
-         * SmartDashboard.putData(
-         * "Deliver Soda", new Autonomous(m_drivetrain, m_claw, m_wrist, m_elevator));
-         * 
-         * // Assign default commands
-         */
         m_drivetrain.setDefaultCommand(
-                new ArcadeDrive(m_controller::getLeftY, m_controller::getRightY, m_drivetrain));
+                new ArcadeDrive(m_drivetrain, m_controller::getLeftY, m_controller::getRightX));
 
-        /*
-         * // Show what command your subsystem is running on the SmartDashboard
-         * SmartDashboard.putData(m_drivetrain);
-         * SmartDashboard.putData(m_elevator);
-         * SmartDashboard.putData(m_wrist);
-         * SmartDashboard.putData(m_claw);
-         */
+        SmartDashboard.putStringArray("Auto List", new String[] { "Long Ally", "Short Ally", "Charge Station" });
 
         // Configure the button bindings
         configureButtonBindings();
@@ -114,20 +101,6 @@ public class RobotContainer {
         new JoystickButton(m_reachButtons, 6);
         new JoystickButton(m_reachButtons, 7);
 
-        /*
-         * final JoystickButton dpadUp = new JoystickButton(m_controller, 5);
-         * final JoystickButton dpadRight = new JoystickButton(m_controller, 6);
-         * final JoystickButton dpadDown = new JoystickButton(m_controller, 7);
-         * final JoystickButton dpadLeft = new JoystickButton(m_controller, 8);
-         * final JoystickButton l2 = new JoystickButton(m_controller, 9);
-         * final JoystickButton r2 = new JoystickButton(m_controller, 10);
-         * final JoystickButton l1 = new JoystickButton(m_controller, 11);
-         * final JoystickButton r1 = new JoystickButton(m_controller, 12);
-         * 
-         * // Connect the buttons to commands
-         */
-
-
         // reachFloor.onTrue(new ReachFloor(m_elevator, m_arm));
         // reachMidCone.onTrue(new ReachMidConeNode(m_elevator, m_arm));
         // reachTopCone.onTrue(new ReachTopConeNode(m_elevator, m_arm));
@@ -135,18 +108,6 @@ public class RobotContainer {
         // reachTopCube.onTrue(new ReachTopCubeNode(m_elevator, m_arm));
         // reachDoubleStation.onTrue(new ReachOut(m_elevator, m_arm, 0, 0));
         // reachCruising.onTrue(new ReachOut(m_elevator, m_arm, 0, 0));
-
-        /*
-         * dpadUp.whenPressed(new SetElevatorSetpoint(0.25, m_elevator));
-         * dpadDown.whenPressed(new SetElevatorSetpoint(0.0, m_elevator));
-         * dpadRight.whenPressed(new CloseClaw(m_claw));
-         * dpadLeft.whenPressed(new OpenClaw(m_claw));
-         * 
-         * r1.whenPressed(new PrepareToPickup(m_claw, m_wrist, m_elevator));
-         * r2.whenPressed(new Pickup(m_claw, m_wrist, m_elevator));
-         * l1.whenPressed(new Place(m_claw, m_wrist, m_elevator));
-         * l2.whenPressed(new Autonomous(m_drivetrain, m_claw, m_wrist, m_elevator));
-         */
     }
 
     /**
@@ -155,45 +116,56 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return m_autonomousCommand;
+        String autoName = SmartDashboard.getString("Auto Selector", ""); 
+        // Note: no default, only do something if there was a selection in the SmartDashboard
+        
+        switch (autoName) {
+            case "Long Ally":
+                return new LongAllyAuto(m_drivetrain, m_elevator, m_arm, m_wrist, m_grabber);
+            case "Short Ally":
+                return new ShortAllyAuto(m_drivetrain, m_elevator, m_arm, m_wrist, m_grabber);
+            case "Charge Station":
+                return new ChargeStationAuto(m_drivetrain, m_elevator, m_arm, m_wrist, m_grabber);
+            default:
+                return null;
+        }
     }
 
     public void runJoysticks() {
 
         m_arm.log();
-
         m_grabber.log();
 
-        if (m_Controller2.getLeftBumper()){
-            new MoveArm(m_arm, 1).schedule();
+       // if (Math.abs(m_Controller2.getLeftY()) > .02) { //
+       //     new MoveArm(m_arm, m_Controller2.getLeftY()).schedule();
+       // } else {
+       //     new MoveArm(m_arm, 0).schedule();
+       // }
+
+        if (Math.abs(m_Controller2.getRightY()) > .02) {
+            new MoveElevator(m_elevator, m_Controller2.getRightY() * Constants.kElevatorPowerLimit).schedule();
+        } else {
+            new MoveElevator(m_elevator, 0).schedule();
         }
 
-        if (m_Controller2.getLeftTriggerAxis() >= .25d) {
-            new MoveArm(m_arm, -1).schedule();
-        }
-
-        if (m_Controller2.getRightBumper()) {
-            new MoveElevator(m_elevator, .5).schedule();
-        }
-
-        if (m_Controller2.getRightTriggerAxis() >= .25d) {
-            new MoveElevator(m_elevator, -.5).schedule();
-        }
-
-        if (m_Controller2.getAButtonPressed()) {
+        if (m_Controller2.getAButton()) {
             new OpenGrabber(m_grabber).schedule();
+        } else if (m_Controller2.getBButton()) {
+            new CloseGrabber(m_grabber, Constants.kGrabberCubeSpeed).schedule();
+        } else if (m_Controller2.getXButton()) {
+            new CloseGrabber(m_grabber, Constants.kGrabberConeSpeed).schedule();
+        } else {
+            new StopGrabber(m_grabber).schedule();
         }
 
-        if (m_Controller2.getBButtonPressed()) {
-            new CloseGrabber(m_grabber).schedule();
-        }
+        if (m_Controller2.getXButton())
 
-        if (m_Controller2.getXButton()) {
+        {
             new MoveWrist(m_wrist, .5).schedule();
-        }
-
-        if (m_Controller2.getYButton()) {
+        } else if (m_Controller2.getYButton()) {
             new MoveWrist(m_wrist, -.5).schedule();
+        } else {
+            new StopWrist(m_wrist).schedule();
         }
 
         if (m_reachButtons.getRawButtonPressed(1)) {

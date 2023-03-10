@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,67 +23,90 @@ public class Drivetrain extends SubsystemBase {
      * the robots chassis.
      * These include four drive motors, a left and right encoder and a gyro.
      */
-    private final CANSparkMax m_leftFrontMotor = new CANSparkMax(Constants.kLeftFrontCANId, MotorType.kBrushless);
-    private final CANSparkMax m_leftBackMotor = new CANSparkMax(Constants.kLeftBackCANId, MotorType.kBrushless);
-    private final MotorController m_leftMotor = new MotorControllerGroup(m_leftFrontMotor, m_leftBackMotor);
+    private CANSparkMax m_leftFrontMotor;
+    private CANSparkMax m_leftBackMotor;
+    private MotorController m_leftMotor;
 
-    private final CANSparkMax m_rightFrontMotor = new CANSparkMax(Constants.kRightFrontCANId, MotorType.kBrushless);
-    private final CANSparkMax m_rightBackMotor = new CANSparkMax(Constants.kRightBackCANId, MotorType.kBrushless);
-    private final MotorController m_rightMotor = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);
+    private CANSparkMax m_rightFrontMotor;
+    private CANSparkMax m_rightBackMotor;
+    private MotorController m_rightMotor;
 
-    private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+    private DifferentialDrive m_drive;
 
-    private final RelativeEncoder m_leftEncoder = m_leftFrontMotor.getEncoder();
-    private final RelativeEncoder m_rightEncoder = m_rightFrontMotor.getEncoder();
+    private RelativeEncoder m_leftEncoder;
+    private RelativeEncoder m_rightEncoder;
 
-    private final Pigeon2 m_gyro = new Pigeon2(20);
-
+    private Pigeon2 m_gyro;
 
     /** Create a new drivetrain subsystem. */
     public Drivetrain() {
         super();
 
+        m_leftFrontMotor = new CANSparkMax(Constants.kLeftFrontCANId, MotorType.kBrushless);
+        m_leftFrontMotor.setInverted(true);
         m_leftFrontMotor.setSmartCurrentLimit(40);
+        m_leftFrontMotor.setIdleMode(IdleMode.kBrake);
+
+        m_leftBackMotor = new CANSparkMax(Constants.kLeftBackCANId, MotorType.kBrushless);
+        m_leftBackMotor.setInverted(true);
         m_leftBackMotor.setSmartCurrentLimit(40);
+        m_leftBackMotor.setIdleMode(IdleMode.kBrake);
+
+        m_rightFrontMotor = new CANSparkMax(Constants.kRightFrontCANId, MotorType.kBrushless);
+        m_rightFrontMotor.setInverted(false);
         m_rightFrontMotor.setSmartCurrentLimit(40);
-        m_rightBackMotor.setSmartCurrentLimit(40);
+        m_rightFrontMotor.setIdleMode(IdleMode.kBrake);
 
-        // We need to invert one side of the drivetrain so that positive voltages
-        // result in both sides moving forward. Depending on how your robot's
-        // gearbox is constructed, you might have to invert the left side instead.
-        m_rightMotor.setInverted(true);
+        m_rightBackMotor = new CANSparkMax(Constants.kRightBackCANId, MotorType.kBrushless);
+        m_rightBackMotor.setInverted(false);
+        m_rightBackMotor.setSmartCurrentLimit(40    );
+        m_rightBackMotor.setIdleMode(IdleMode.kBrake);
 
-        // Encoders may measure differently in the real world and in
-        // simulation. In this example the robot moves 0.042 barleycorns
-        // per tick in the real world, but the simulated encoders
-        // simulate 360 tick encoders. This if statement allows for the
-        // real robot to handle this difference in devices.
+        m_leftMotor = new MotorControllerGroup(m_leftFrontMotor, m_leftBackMotor);
+        m_rightMotor = new MotorControllerGroup(m_rightFrontMotor, m_rightBackMotor);       
 
-        // circumference (6*pi) / (8.45 * 42)
-        double kDriveInchesPerPulse = (6 * Math.PI) / (8.45 * 42);
-        m_leftEncoder.setPositionConversionFactor(kDriveInchesPerPulse);
-        m_rightEncoder.setPositionConversionFactor(kDriveInchesPerPulse);
-
+        m_drive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+    
+        m_leftEncoder = m_leftFrontMotor.getEncoder();
+        m_rightEncoder = m_rightFrontMotor.getEncoder();
+    
+        m_gyro = new Pigeon2(Constants.kGyroDevice);
+        
+        // circumference (6in*pi)/axlerev * axelrev/8.45mrev  = in / mrev
+        double kDriveInchesPerRev = (6 * Math.PI) / 8.45;
+        m_leftEncoder.setPositionConversionFactor(kDriveInchesPerRev);
+        m_rightEncoder.setPositionConversionFactor(kDriveInchesPerRev);
     }
 
     /** The log method puts interesting information to the SmartDashboard. */
     public void log() {
-        SmartDashboard.putNumber("Left Distance", m_leftEncoder.getPosition());
-        SmartDashboard.putNumber("Right Distance", m_rightEncoder.getPosition());
         SmartDashboard.putNumber("Left Speed", m_leftEncoder.getVelocity());
+        SmartDashboard.putNumber("Left Distance Inches", m_leftEncoder.getPosition());
+        SmartDashboard.putNumber("Left Distance Feet", m_leftEncoder.getPosition());
+
         SmartDashboard.putNumber("Right Speed", m_rightEncoder.getVelocity());
-        SmartDashboard.putNumber("Gyro", m_gyro.getYaw());
+        SmartDashboard.putNumber("Right Distance Inches", m_rightEncoder.getPosition()/12);
+        SmartDashboard.putNumber("Right Distance Feet", m_rightEncoder.getPosition()/12);
+
+        SmartDashboard.putNumber("Gyro Yaw", m_gyro.getYaw());
+        SmartDashboard.putNumber("Gyro Pitch", m_gyro.getPitch());
+        SmartDashboard.putNumber("Gyro Roll", m_gyro.getRoll());
     }
 
-    /**
-     */
-    public void CurvatureDrive(double forward, double rotation) {
-         m_drive.curvatureDrive(forward, rotation, false);
+    // /**
+    //  */
+    // public void CurvatureDrive(double forward, double rotation) {
+    //     m_drive.curvatureDrive(forward, rotation, false);
+    // }
+
+    public void TankDrive(double left, double right) {
+        m_drive.tankDrive(left, right);
     }
 
     public void ArcadeDrive(double forward, double rotation) {
-            m_drive.arcadeDrive(forward, rotation);
+        m_drive.arcadeDrive(forward, rotation);
     }
+
     /**
      * Get the robot's heading.
      *
@@ -104,8 +128,8 @@ public class Drivetrain extends SubsystemBase {
      *
      * @return The distance driven (average of left and right encoders).
      */
-    public double getDistance() {
-        return (m_leftEncoder.getPosition() + m_rightEncoder.getPosition()) / 2;
+    public double getPosition() {
+        return (m_rightEncoder.getPosition());
     }
 
     /**
@@ -114,9 +138,8 @@ public class Drivetrain extends SubsystemBase {
      * @return The distance to the obstacle detected by the rangefinder.
      */
     // public double getDistanceToObstacle() {
-    //     // Really meters in simulation since it's a rangefinder...
-    //     return m_rangefinder.getDistance();
-    
+    // // Really meters in simulation since it's a rangefinder...
+    // return m_rangefinder.getDistance();
 
     /** Call log method every loop. */
     @Override

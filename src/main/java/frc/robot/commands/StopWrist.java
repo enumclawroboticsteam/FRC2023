@@ -4,31 +4,35 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Grabber;
+import frc.robot.subsystems.Wrist;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** Closes the claw until the limit switch is tripped. */
-public class CloseGrabber extends CommandBase {
-    private final Grabber m_grabber;
-    private double m_speed;
+public class StopWrist extends CommandBase {
+    private final Wrist m_wrist;
 
-    public CloseGrabber(Grabber grabber, double speed) {
+    public StopWrist(Wrist wrist) {
         super();
-        m_grabber = grabber;
-        addRequirements(m_grabber);
-        m_speed = speed;
+        m_wrist = wrist;
+        addRequirements(m_wrist);
     }
 
     // Called just before this Command runs the first time
     @Override
     public void initialize() {
-        m_grabber.close(m_speed);
+        m_wrist.stop();
         super.initialize();
+    }
+
+    // Make this return true when this Command no longer needs to run execute()
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 
     // Called once after isFinished returns true
     @Override
     public void end(boolean interrupted) {
-        m_grabber.stop();
+        m_wrist.stop();
     }
 }

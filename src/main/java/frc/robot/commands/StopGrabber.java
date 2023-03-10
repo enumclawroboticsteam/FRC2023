@@ -6,22 +6,13 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.Grabber;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-/**
- * Opens the claw for one second. Real robots should use sensors, stalling
- * motors is BAD!
- */
-public class OpenGrabber extends CommandBase {
+/** Closes the claw until the limit switch is tripped. */
+public class StopGrabber extends CommandBase {
     private final Grabber m_grabber;
 
-    /**
-     * Creates a new OpenClaw command.
-     *
-     * @param grabber The claw to use
-     */
-    public OpenGrabber(Grabber grabber) {
-        super();;
+    public StopGrabber(Grabber grabber) {
+        super();
         m_grabber = grabber;
         addRequirements(m_grabber);
     }
@@ -29,8 +20,14 @@ public class OpenGrabber extends CommandBase {
     // Called just before this Command runs the first time
     @Override
     public void initialize() {
-        m_grabber.open();
+        m_grabber.stop();
         super.initialize();
+    }
+
+    // Make this return true when this Command no longer needs to run execute()
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 
     // Called once after isFinished returns true

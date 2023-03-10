@@ -9,41 +9,54 @@ import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 
 /**
- * Drive the given distance straight (negative values go backwards). Uses a local PID controller to
- * run a simple PID loop that is only enabled while this command is running. The input is the
+ * Drive the given distance straight (negative values go backwards). Uses a
+ * local PID controller to
+ * run a simple PID loop that is only enabled while this command is running. The
+ * input is the
  * averaged values of the left and right encoders.
  */
 public class StraightDrive extends PIDCommand {
-  private final Drivetrain m_drivetrain;
+    private final Drivetrain m_drivetrain;
+    private double m_maxSpeed;
 
-  /**
-   * Create a new DriveStraight command.
-   *
-   * @param distance The distance to drive
-   */
-  public StraightDrive(Drivetrain drivetrain, double distance) {
-    //
-    super(
-        new PIDController(4, 0, 0), drivetrain::getDistance, distance, d -> drivetrain.CurvatureDrive(d, 0));
-// TODO: Get Right Values AND use gryo to drive straight 
-    m_drivetrain = drivetrain;
-    addRequirements(m_drivetrain);
+    // NOTE: Resets positions in initialize so we can send in raw distance 
+    public StraightDrive(Drivetrain drivetrain, double distance, double maxSpeed) {
+        super(new PIDController(4, 0, 0), drivetrain::getPosition, distance, o -> drivetrain.TankDrive(o * maxSpeed, o * maxSpeed));
+        m_drivetrain = drivetrain;
+        m_maxSpeed = maxSpeed;
+        addRequirements(m_drivetrain);
 
-    getController().setTolerance(0.01);
-  }
+        getController().setTolerance(2);
+    }
 
+    // Todo: Lmit speed using bounds?
+    public static double bounds(double value, double maxVariance) {
+        double maxValue = Math.abs(maxVariance);
+        double minValue = -Math.abs(maxVariance);
 
-  // Called just before this Command runs the first time
-  @Override
-  public void initialize() {
-    // Get everything in a safe starting state.
-    m_drivetrain.reset();
-    super.initialize();
-  }
+        if (value <= minValue) {
+            return minValue;
+        } else if (value > maxValue) {
+            return maxValue;
+        } else {
+            return value;
+        }
+    }
 
-  // Make this return true when this Command no longer needs to run execute()
-  @Override
-  public boolean isFinished() {
-    return getController().atSetpoint();
-  }
+    // (o > maxSpeedFactor? maxSpeedFactor: (0 < -maxSpeedFactor ? -maxSpeedFactor :
+    // o)
+
+    // Called just before this Command runs the first time
+    @Override
+    public void initialize() {
+        super.initialize();
+        // Get everything in a safe starting state.
+        m_drivetrain.reset();
+    }
+
+    // Make this return true when this Command no longer needs to run execute()
+    @Override
+    public boolean isFinished() {
+        return getController().atSetpoint();
+    }
 }

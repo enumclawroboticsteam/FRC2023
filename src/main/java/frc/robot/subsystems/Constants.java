@@ -1,9 +1,8 @@
 package frc.robot.subsystems;
 
 public final class Constants {
-    public final int kFloor = 0;
 
-//  CAN IDs 
+    //  CAN IDs 
 
     public static final int kLeftFrontCANId = 7;
     public static final int kLeftBackCANId = 1;
@@ -15,7 +14,7 @@ public final class Constants {
     public static final int kArmCANId = 6;
 
 
-// Arm PID Values 
+    // Arm PID Values 
 
     public static final double kArmP = 8;
     public static final double kArmI = 0;
@@ -25,11 +24,19 @@ public final class Constants {
 
 
     // Elevator PID Values
-
     public static final double kElevatorP = 8;
     public static final double kElevatorI = 0;
     public static final double kElevatorD = 0;
     public static final double kElevatorToleranceInch = 1;
     public static final double kElevatorRateToleranceInchPerS = 1;
 
+    public static final double kElevatorPowerLimit = .50;
+
+    public static final double kGrabberOpenSpeed = -.20;
+    public static final double kGrabberCubeSpeed = .2d;
+    public static final double kGrabberConeSpeed = .85d;
+
+    public static final int kGyroDevice = 20;
+
+    public final int kFloor = 0;
 }
