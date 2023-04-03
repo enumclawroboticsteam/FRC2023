@@ -7,31 +7,32 @@ package frc.robot.commands;
 import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /** The main autonomous command to pickup and deliver the soda to the box. */
 public class ShortAllyAuto extends SequentialCommandGroup {
     /** Create a new autonomous command. */
     public ShortAllyAuto(Drivetrain drive, Elevator elevator, Arm arm, Wrist wrist, Grabber grabber) {
-        addCommands(
-                new ResetDrive(drive),
-                // TODO: Find Out What we want to do during auto
-                //new PlaceMidCone(drive, grabber, wrist, elevator, arm),
-                //new ParallelCommandGroup(new MoveArmUpPID(arm),
-                        //new SafeMoveWrist(wrist)),
-                new StraightDrive(drive, 212, .25));
-               // new TurnDrive(drive, 135),
-                //new ParallelCommandGroup(new ReachFloor(elevator, arm),
-               //         new FloorMoveWrist(wrist)),
-                //new ParallelCommandGroup(new GrabPiece(grabber, elevator, wrist),
-                        //new StraightDrive(drive, 12)),
-                //new ParallelCommandGroup(new SafeMoveWrist(wrist),
-                        //new MoveArmUpPID(arm)),
-                //new TurnDrive(drive, -135),
-                //new StraightDrive(drive, 212),
-                //new PlaceMidCone(drive, grabber, wrist, elevator, arm));
+       this.addCommands(
+            // new SequentialCommandGroup(
+            // new CloseGrabber(grabber, Constants.kGrabberCubeSpeed),
+            // new WaitCommand(.25d),
+            // new MoveWrist(wrist, Constants.kDownWristPowerLimit),
+            // new WaitCommand(.25d),
+            // new StopWrist(wrist),
+            // new WaitCommand(.25d),
+            // new MoveArm(arm, 1 * Constants.kArmPowerLimit),
+            // new WaitCommand(1d),
+            // new MoveArm(arm, 0),
+            // new WaitCommand(.5),
+            // new OpenGrabber(grabber), 
+            // new WaitCommand(.5),
+            // new StopGrabber(grabber)
+            //)
+        );
     }
 }

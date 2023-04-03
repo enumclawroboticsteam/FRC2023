@@ -40,7 +40,7 @@ public class Arm extends SubsystemBase {
 
     /** The log method puts interesting information to the SmartDashboard. */
     public void log() {
-        SmartDashboard.putNumber("Arm Position", m_encoder.getPosition());
+        //SmartDashboard.putNumber("Arm Position", m_encoder.getPosition());
     }
 
     public double getPosition() {

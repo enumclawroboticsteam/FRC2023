@@ -7,22 +7,29 @@ package frc.robot.commands;
 import frc.robot.subsystems.Grabber;
 import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Constants;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 /** The main autonomous command to pickup and deliver the soda to the box. */
 public class LongAllyAuto extends SequentialCommandGroup {
     /** Create a new autonomous command. */
     public LongAllyAuto(Drivetrain drivetrain, Elevator elevator, Arm arm, Wrist wrist, Grabber grabber) {
         addCommands(
-                new ResetDrive(drivetrain),
+            // raceWith(new WaitCommand(1d), new MoveArm(arm, 1 * Constants.kArmPowerLimit)), 
+            // raceWith(new WaitCommand(.25d), new MoveWrist(wrist, Constants.kDownWristPowerLimit)),
+            // raceWith(new WaitCommand(.5), new OpenGrabber(grabber)),
+            // raceWith(new WaitCommand(1d), new MoveArm(arm, -1 * Constants.kArmPowerLimit))
+
+                //new ResetDrive(drivetrain),
                 // TODO: Find Out What we want to do during auto
                 //new PlaceMidCone(drivetrain, grabber, wrist, elevator, arm),
                 //new ParallelCommandGroup(new MoveArmUpPID(arm),
                         //new SafeMoveWrist(wrist)),
-                new StraightDrive(drivetrain, 212, .25)   // inches
+                //new StraightDrive(drivetrain, 212, .25)   // inches
                // new TurnDrive(drivetrain, 135),
                 //new ParallelCommandGroup(new ReachFloor(elevator, arm),
                //         new FloorMoveWrist(wrist)),

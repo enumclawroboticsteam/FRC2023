@@ -30,8 +30,15 @@ public final class Constants {
     public static final double kElevatorToleranceInch = 1;
     public static final double kElevatorRateToleranceInchPerS = 1;
 
-    public static final double kElevatorPowerLimit = .50;
+    public static final double kElevatorPowerLimit = .75;
 
+    public static final double kDownWristPowerLimit = .15;
+    public static final double kUpWristPowerLimit = .40;
+
+    public static final double kArmPowerLimit = .5;
+
+
+    
     public static final double kGrabberOpenSpeed = -.20;
     public static final double kGrabberCubeSpeed = .2d;
     public static final double kGrabberConeSpeed = .85d;

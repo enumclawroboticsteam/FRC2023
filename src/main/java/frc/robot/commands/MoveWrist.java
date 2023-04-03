@@ -5,14 +5,15 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Wrist;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
-public class MoveWrist extends WaitCommand {
+public class MoveWrist extends CommandBase {
     private final Wrist m_wrist;
-    private final double m_speed;
+    private double m_speed;
 
     public MoveWrist(Wrist wrist, double speed) {
-        super(.1);
+        super();
         m_wrist = wrist;
         m_speed = speed;
         addRequirements(m_wrist);
@@ -25,9 +26,14 @@ public class MoveWrist extends WaitCommand {
         super.initialize();
     }
 
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
+
       // Called once after isFinished returns true
     @Override
     public void end(boolean interrupted) {
-        m_wrist.stop();
+        // m_wrist.stop();
     }
 }

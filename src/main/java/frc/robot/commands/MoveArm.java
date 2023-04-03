@@ -25,9 +25,14 @@ public class MoveArm extends WaitCommand {
         super.initialize();
     }
 
-      // Called once after isFinished returns true
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
+
+    // Called once after isFinished returns true
     @Override
     public void end(boolean interrupted) {
-        m_arm.stop();
+//        m_arm.stop();
     }
 }

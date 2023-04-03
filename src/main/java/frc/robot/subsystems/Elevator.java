@@ -38,7 +38,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void log() {
-        SmartDashboard.putNumber("Elevator Position", m_encoder.getPosition());
+       // SmartDashboard.putNumber("Elevator Position", m_encoder.getPosition());
     }
 
     public double getPosition() {

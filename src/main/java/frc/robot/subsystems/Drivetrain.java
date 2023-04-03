@@ -80,17 +80,17 @@ public class Drivetrain extends SubsystemBase {
 
     /** The log method puts interesting information to the SmartDashboard. */
     public void log() {
-        SmartDashboard.putNumber("Left Speed", m_leftEncoder.getVelocity());
-        SmartDashboard.putNumber("Left Distance Inches", m_leftEncoder.getPosition());
-        SmartDashboard.putNumber("Left Distance Feet", m_leftEncoder.getPosition());
+        //SmartDashboard.putNumber("Left Speed", m_leftEncoder.getVelocity());
+        // SmartDashboard.putNumber("Left Distance Inches", m_leftEncoder.getPosition());
+        // SmartDashboard.putNumber("Left Distance Feet", m_leftEncoder.getPosition());
 
-        SmartDashboard.putNumber("Right Speed", m_rightEncoder.getVelocity());
-        SmartDashboard.putNumber("Right Distance Inches", m_rightEncoder.getPosition()/12);
-        SmartDashboard.putNumber("Right Distance Feet", m_rightEncoder.getPosition()/12);
+        // SmartDashboard.putNumber("Right Speed", m_rightEncoder.getVelocity());
+        // SmartDashboard.putNumber("Right Distance Inches", m_rightEncoder.getPosition()/12);
+        // SmartDashboard.putNumber("Right Distance Feet", m_rightEncoder.getPosition()/12);
 
-        SmartDashboard.putNumber("Gyro Yaw", m_gyro.getYaw());
-        SmartDashboard.putNumber("Gyro Pitch", m_gyro.getPitch());
-        SmartDashboard.putNumber("Gyro Roll", m_gyro.getRoll());
+        // SmartDashboard.putNumber("Gyro Yaw", m_gyro.getYaw());
+        // SmartDashboard.putNumber("Gyro Pitch", m_gyro.getPitch());
+        // SmartDashboard.putNumber("Gyro Roll", m_gyro.getRoll());
     }
 
     // /**

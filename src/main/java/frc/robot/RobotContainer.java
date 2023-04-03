@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
+//import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -55,25 +55,25 @@ public class RobotContainer {
     private final Elevator m_elevator = new Elevator();
     private final Wrist m_wrist = new Wrist();
     private final Grabber m_grabber = new Grabber();
-    private final Joystick m_reachButtons = new Joystick(1);
     private final Arm m_arm = new Arm();
 
     private final XboxController m_controller = new XboxController(0);
-    private final XboxController m_Controller2 = new XboxController(2);
+    private final XboxController m_Controller2 = new XboxController(1);
+    //private final Joystick m_reachButtons = new Joystick(2);
 
-    //private final CommandBase m_autonomousCommand = new Autonomous(m_drivetrain, m_elevator, m_arm, m_wrist,
-            //m_grabber);
-    //private final CommandBase m_autonomousCommand2 = new Autonomous2(m_drivetrain, m_elevator, m_arm, m_wrist,
-           // m_grabber);
-
-
+    // private final CommandBase m_autonomousCommand = new Autonomous(m_drivetrain,
+    // m_elevator, m_arm, m_wrist,
+    // m_grabber);
+    // private final CommandBase m_autonomousCommand2 = new
+    // Autonomous2(m_drivetrain, m_elevator, m_arm, m_wrist,
+    // m_grabber);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         m_drivetrain.setDefaultCommand(
-                new ArcadeDrive(m_drivetrain, m_controller::getLeftY, m_controller::getRightX));
+                new ArcadeDrive(m_drivetrain, m_controller::getRightX, m_controller::getLeftY));
 
         SmartDashboard.putStringArray("Auto List", new String[] { "Long Ally", "Short Ally", "Charge Station" });
 
@@ -93,13 +93,13 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Create some buttons
 
-        new JoystickButton(m_reachButtons, 1);
-        new JoystickButton(m_reachButtons, 2);
-        new JoystickButton(m_reachButtons, 3);
-        new JoystickButton(m_reachButtons, 4);
-        new JoystickButton(m_reachButtons, 5);
-        new JoystickButton(m_reachButtons, 6);
-        new JoystickButton(m_reachButtons, 7);
+        // new JoystickButton(m_reachButtons, 1);
+        // new JoystickButton(m_reachButtons, 2);
+        // new JoystickButton(m_reachButtons, 3);
+        // new JoystickButton(m_reachButtons, 4);
+        // new JoystickButton(m_reachButtons, 5);
+        // new JoystickButton(m_reachButtons, 6);
+        // new JoystickButton(m_reachButtons, 7);
 
         // reachFloor.onTrue(new ReachFloor(m_elevator, m_arm));
         // reachMidCone.onTrue(new ReachMidConeNode(m_elevator, m_arm));
@@ -116,9 +116,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        String autoName = SmartDashboard.getString("Auto Selector", ""); 
-        // Note: no default, only do something if there was a selection in the SmartDashboard
-        
+        String autoName = SmartDashboard.getString("Auto Selector", "");
+        // Note: no default, only do something if there was a selection in the
+        // SmartDashboard
+
         switch (autoName) {
             case "Long Ally":
                 return new LongAllyAuto(m_drivetrain, m_elevator, m_arm, m_wrist, m_grabber);
@@ -136,14 +137,21 @@ public class RobotContainer {
         m_arm.log();
         m_grabber.log();
 
-       // if (Math.abs(m_Controller2.getLeftY()) > .02) { //
-       //     new MoveArm(m_arm, m_Controller2.getLeftY()).schedule();
-       // } else {
-       //     new MoveArm(m_arm, 0).schedule();
-       // }
+        // out
+        if (m_Controller2.getLeftY() < -.02) {
+            new MoveArm(m_arm, m_Controller2.getLeftY() * Constants.kArmPowerLimit).schedule();
+        }
+        // in
+        else if (m_Controller2.getLeftY() > .02) {
+            new MoveArm(m_arm, m_Controller2.getLeftY() * Constants.kArmPowerLimit).schedule();
+        } else {
+            new MoveArm(m_arm, 0).schedule();
+        }
 
-        if (Math.abs(m_Controller2.getRightY()) > .02) {
-            new MoveElevator(m_elevator, m_Controller2.getRightY() * Constants.kElevatorPowerLimit).schedule();
+        if (m_Controller2.getLeftBumper()) {
+            new MoveElevator(m_elevator, Constants.kElevatorPowerLimit).schedule(); // Moves the elevator Up
+        } else if (m_Controller2.getLeftTriggerAxis() > .5) {
+            new MoveElevator(m_elevator, -Constants.kElevatorPowerLimit).schedule(); // Moves the elevator Down 
         } else {
             new MoveElevator(m_elevator, 0).schedule();
         }
@@ -158,42 +166,46 @@ public class RobotContainer {
             new StopGrabber(m_grabber).schedule();
         }
 
-        if (m_Controller2.getXButton())
-
-        {
-            new MoveWrist(m_wrist, .5).schedule();
-        } else if (m_Controller2.getYButton()) {
-            new MoveWrist(m_wrist, -.5).schedule();
+        if (m_Controller2.getPOV() == 0  || m_Controller2.getPOV() == 45 || m_Controller2.getPOV() == 315 ) {
+            new MoveWrist(m_wrist, -Constants.kDownWristPowerLimit).schedule();
+        } else if (m_Controller2.getPOV() == 180  || m_Controller2.getPOV() == 135 || m_Controller2.getPOV() == 225) {
+            new MoveWrist(m_wrist, Constants.kUpWristPowerLimit).schedule();
         } else {
             new StopWrist(m_wrist).schedule();
         }
+        SmartDashboard.putNumber("POV", m_Controller2.getPOV());
 
-        if (m_reachButtons.getRawButtonPressed(1)) {
-            new ReachFloor(m_elevator, m_arm).schedule();
-        }
 
-        if (m_reachButtons.getRawButtonPressed(2)) {
-            new ReachMidConeNode(m_elevator, m_arm).schedule();
-        }
+        // if (m_reachButtons.getRawButtonPressed(1)) {
+        //     new ReachFloor(m_elevator, m_arm).schedule();
+        // }
 
-        if (m_reachButtons.getRawButtonPressed(3)) {
-            new ReachMidCubeNode(m_elevator, m_arm).schedule();
-        }
+        // if (m_reachButtons.getRawButtonPressed(2)) {
+        //     new ReachMidConeNode(m_elevator, m_arm).schedule();
+        // }
 
-        if (m_reachButtons.getRawButtonPressed(4)) {
-            new ReachTopConeNode(m_elevator, m_arm).schedule();
-        }
+        // if (m_reachButtons.getRawButtonPressed(3)) {
+        //     new ReachMidCubeNode(m_elevator, m_arm).schedule();
+        // }
 
-        if (m_reachButtons.getRawButtonPressed(5)) {
-            new ReachTopCubeNode(m_elevator, m_arm).schedule();
-        }
+        // if (m_reachButtons.getRawButtonPressed(4)) {
+        //     new ReachTopConeNode(m_elevator, m_arm).schedule();
+        // }
 
-        if (m_reachButtons.getRawButtonPressed(6)) {
-            new ReachDoubleStation(m_elevator, m_arm).schedule();
-        }
+        // if (m_reachButtons.getRawButtonPressed(5)) {
+        //     new ReachTopCubeNode(m_elevator, m_arm).schedule();
+        // }
 
-        if (m_reachButtons.getRawButtonPressed(7)) {
-            new ReachCruising(m_elevator, m_arm).schedule();
-        }
+        // if (m_reachButtons.getRawButtonPressed(6)) {
+        //     new ReachDoubleStation(m_elevator, m_arm).schedule();
+        // }
+
+        // if (m_reachButtons.getRawButtonPressed(7)) {
+        //     new ReachCruising(m_elevator, m_arm).schedule();
+        // }
+    }
+
+    public void stop() {
+        m_drivetrain.ArcadeDrive(0, 0);
     }
 }
